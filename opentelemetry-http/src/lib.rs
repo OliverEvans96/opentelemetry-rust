@@ -83,6 +83,7 @@ mod reqwest {
         }
     }
 
+    #[cfg(feature = "reqwest-blocking")]
     #[async_trait]
     impl HttpClient for reqwest::blocking::Client {
         async fn send(&self, request: Request<Vec<u8>>) -> Result<Response<Bytes>, HttpError> {
