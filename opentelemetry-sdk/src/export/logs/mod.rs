@@ -6,11 +6,13 @@ use futures_util::future::BoxFuture;
 use opentelemetry::logs::Severity;
 use opentelemetry::{
     logs::{LogError, LogResult},
-    InstrumentationLibrary,
+    InstrumentationLibrary, MaybeSend, MaybeSync,
 };
 use std::fmt::Debug;
 
 /// `LogExporter` defines the interface that log exporters should implement.
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 pub trait LogExporter: Send + Sync + Debug {
     /// Exports a batch of [`LogRecord`, `InstrumentationLibrary`].
     fn export(

@@ -14,7 +14,7 @@ use opentelemetry::logs::Severity;
 use opentelemetry::{
     global,
     logs::{LogError, LogResult},
-    InstrumentationLibrary,
+    InstrumentationLibrary, MaybeSend, MaybeSync,
 };
 use std::sync::atomic::AtomicBool;
 use std::{cmp::min, env, sync::Mutex};

@@ -45,7 +45,7 @@ use futures_util::{
     stream::{self, FusedStream, FuturesUnordered},
     StreamExt as _,
 };
-use opentelemetry::global;
+use opentelemetry::{global, MaybeBoxFuture, MaybeSend, MaybeSync};
 use opentelemetry::{
     trace::{TraceError, TraceResult},
     Context,
@@ -309,7 +309,7 @@ enum BatchMessage {
 
 struct BatchSpanProcessorInternal<R> {
     spans: Vec<SpanData>,
-    export_tasks: FuturesUnordered<BoxFuture<'static, ExportResult>>,
+    export_tasks: FuturesUnordered<MaybeBoxFuture<'static, ExportResult>>,
     runtime: R,
     exporter: Box<dyn SpanExporter>,
     config: BatchConfig,
@@ -413,7 +413,7 @@ impl<R: RuntimeChannel> BatchSpanProcessorInternal<R> {
         true
     }
 
-    fn export(&mut self) -> BoxFuture<'static, ExportResult> {
+    fn export(&mut self) -> MaybeBoxFuture<'static, ExportResult> {
         // Batch size check for flush / shutdown. Those methods may be called
         // when there's no work to do.
         if self.spans.is_empty() {

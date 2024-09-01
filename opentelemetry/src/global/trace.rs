@@ -1,6 +1,6 @@
 use crate::trace::{noop::NoopTracerProvider, SpanContext, Status};
-use crate::InstrumentationLibrary;
 use crate::{trace, trace::TracerProvider, Context, KeyValue};
+use crate::{InstrumentationLibrary, MaybeSend, MaybeSync};
 use once_cell::sync::Lazy;
 use std::borrow::Cow;
 use std::fmt;

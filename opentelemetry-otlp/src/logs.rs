@@ -97,6 +97,8 @@ impl LogExporter {
     }
 }
 
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 impl opentelemetry_sdk::export::logs::LogExporter for LogExporter {
     fn export(
         &mut self,

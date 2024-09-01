@@ -5,7 +5,7 @@
 use std::fmt::Debug;
 
 use futures_core::future::BoxFuture;
-use opentelemetry::trace::TraceError;
+use opentelemetry::{trace::TraceError, MaybeBoxFuture};
 use opentelemetry_sdk::{
     self as sdk,
     export::trace::{ExportResult, SpanData},
@@ -210,7 +210,7 @@ impl SpanExporter {
 }
 
 impl opentelemetry_sdk::export::trace::SpanExporter for SpanExporter {
-    fn export(&mut self, batch: Vec<SpanData>) -> BoxFuture<'static, ExportResult> {
+    fn export(&mut self, batch: Vec<SpanData>) -> MaybeBoxFuture<'static, ExportResult> {
         self.0.export(batch)
     }
 

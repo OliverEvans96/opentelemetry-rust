@@ -6,7 +6,7 @@ use crate::metrics::{
     AsyncInstrumentBuilder, Counter, Gauge, Histogram, InstrumentBuilder, InstrumentProvider,
     ObservableCounter, ObservableGauge, ObservableUpDownCounter, UpDownCounter,
 };
-use crate::KeyValue;
+use crate::{KeyValue, MaybeSend, MaybeSync};
 
 /// Provides access to named [Meter] instances, for instrumenting an application
 /// or crate.
@@ -62,6 +62,11 @@ pub trait MeterProvider {
         attributes: Option<Vec<KeyValue>>,
     ) -> Meter;
 }
+
+#[cfg(not(target_family = "wasm"))]
+type ArcInstrumentProvider = Arc<dyn InstrumentProvider + Send + Sync>;
+#[cfg(target_family = "wasm")]
+type ArcInstrumentProvider = Arc<dyn InstrumentProvider>;
 
 /// Provides the ability to create instruments for recording measurements or
 /// accepting callbacks to report measurements.
@@ -265,13 +270,13 @@ pub trait MeterProvider {
 ///
 #[derive(Clone)]
 pub struct Meter {
-    pub(crate) instrument_provider: Arc<dyn InstrumentProvider + Send + Sync>,
+    pub(crate) instrument_provider: ArcInstrumentProvider,
 }
 
 impl Meter {
     /// Create a new named meter from an instrumentation provider
     #[doc(hidden)]
-    pub fn new(instrument_provider: Arc<dyn InstrumentProvider + Send + Sync>) -> Self {
+    pub fn new(instrument_provider: ArcInstrumentProvider) -> Self {
         Meter {
             instrument_provider,
         }
