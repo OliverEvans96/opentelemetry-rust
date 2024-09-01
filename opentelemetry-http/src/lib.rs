@@ -86,7 +86,8 @@ mod reqwest {
     }
 
     #[cfg(feature = "reqwest-blocking")]
-    #[async_trait]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
     impl HttpClient for reqwest::blocking::Client {
         async fn send(&self, request: Request<Vec<u8>>) -> Result<Response<Bytes>, HttpError> {
             let request = request.try_into()?;
@@ -146,7 +147,8 @@ pub mod hyper {
         }
     }
 
-    #[async_trait]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
     impl<C> HttpClient for HyperClient<C>
     where
         C: Connect + Send + Sync + Clone + Debug + 'static,

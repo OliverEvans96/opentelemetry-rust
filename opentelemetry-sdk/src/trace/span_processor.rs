@@ -954,7 +954,8 @@ mod tests {
         }
     }
 
-    #[async_trait]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
     impl<D, DS> SpanExporter for BlockingExporter<D>
     where
         D: Fn(Duration) -> DS + 'static + Send + Sync,

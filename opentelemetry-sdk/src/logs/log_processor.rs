@@ -552,6 +552,8 @@ mod tests {
         resource: Arc<Mutex<Option<Resource>>>,
     }
 
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
     impl LogExporter for MockLogExporter {
         fn export(
             &mut self,
