@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use futures_core::future::BoxFuture;
+use async_trait::async_trait;
 use http::{header::CONTENT_TYPE, Method};
 use opentelemetry::logs::{LogError, LogResult};
-use opentelemetry::InstrumentationLibrary;
+use opentelemetry::{InstrumentationLibrary, MaybeBoxFuture};
 use opentelemetry_sdk::export::logs::LogExporter;
 use opentelemetry_sdk::logs::LogRecord;
 
@@ -15,7 +15,7 @@ impl LogExporter for OtlpHttpClient {
     fn export(
         &mut self,
         batch: Vec<(&LogRecord, &InstrumentationLibrary)>,
-    ) -> BoxFuture<'static, LogResult<()>> {
+    ) -> MaybeBoxFuture<'static, LogResult<()>> {
         let client = match self
             .client
             .lock()

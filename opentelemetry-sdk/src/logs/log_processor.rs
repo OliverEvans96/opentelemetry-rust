@@ -4,6 +4,7 @@ use crate::{
     runtime::{RuntimeChannel, TrySend},
     Resource,
 };
+use async_trait::async_trait;
 use futures_channel::oneshot;
 use futures_util::{
     future::{self, Either},
@@ -45,7 +46,8 @@ const OTEL_BLRP_MAX_EXPORT_BATCH_SIZE_DEFAULT: usize = 512;
 /// The interface for plugging into a [`Logger`].
 ///
 /// [`Logger`]: crate::logs::Logger
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 pub trait LogProcessor: Send + Sync + Debug {
     /// Called when a log record is ready to processed and exported.
     ///
@@ -95,7 +97,8 @@ impl SimpleLogProcessor {
     }
 }
 
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 impl LogProcessor for SimpleLogProcessor {
     async fn emit(&self, record: &mut LogRecord, instrumentation: &InstrumentationLibrary) {
         // noop after shutdown
@@ -155,7 +158,8 @@ impl<R: RuntimeChannel> Debug for BatchLogProcessor<R> {
     }
 }
 
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 impl<R: RuntimeChannel> LogProcessor for BatchLogProcessor<R> {
     async fn emit(&self, record: &mut LogRecord, instrumentation: &InstrumentationLibrary) {
         let result = self.message_sender.try_send(BatchMessage::ExportLog((

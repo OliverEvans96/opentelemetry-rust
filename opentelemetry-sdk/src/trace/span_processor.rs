@@ -38,6 +38,7 @@ use crate::export::trace::{ExportResult, SpanData, SpanExporter};
 use crate::resource::Resource;
 use crate::runtime::{RuntimeChannel, TrySend};
 use crate::trace::Span;
+use async_trait::async_trait;
 use futures_channel::oneshot;
 use futures_util::{
     future::{self, Either},
@@ -79,7 +80,8 @@ const OTEL_BSP_MAX_CONCURRENT_EXPORTS_DEFAULT: usize = 1;
 /// `SpanProcessor` is an interface which allows hooks for span start and end
 /// method invocations. The span processors are invoked only when is_recording
 /// is true.
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 pub trait SpanProcessor: Send + Sync + std::fmt::Debug {
     /// `on_start` is called when a `Span` is started.  This method is called
     /// synchronously on the thread that started the span, therefore it should
@@ -117,7 +119,8 @@ impl SimpleSpanProcessor {
     }
 }
 
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 impl SpanProcessor for SimpleSpanProcessor {
     fn on_start(&self, _span: &mut Span, _cx: &Context) {
         // Ignored
@@ -237,7 +240,8 @@ impl<R: RuntimeChannel> fmt::Debug for BatchSpanProcessor<R> {
     }
 }
 
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 impl<R: RuntimeChannel> SpanProcessor for BatchSpanProcessor<R> {
     fn on_start(&self, _span: &mut Span, _cx: &Context) {
         // Ignored

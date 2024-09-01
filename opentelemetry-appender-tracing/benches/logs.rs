@@ -58,7 +58,8 @@ impl NoopProcessor {
     }
 }
 
-#[async_trait::async_trait]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 impl LogProcessor for NoopProcessor {
     async fn emit(&self, _: &mut LogRecord, _: &InstrumentationLibrary) {
         // no-op

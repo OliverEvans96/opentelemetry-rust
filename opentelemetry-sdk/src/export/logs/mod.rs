@@ -1,12 +1,12 @@
 //! Log exporters
 use crate::logs::LogRecord;
 use crate::Resource;
-use futures_util::future::BoxFuture;
+use async_trait::async_trait;
 #[cfg(feature = "logs_level_enabled")]
 use opentelemetry::logs::Severity;
 use opentelemetry::{
     logs::{LogError, LogResult},
-    InstrumentationLibrary,
+    InstrumentationLibrary, MaybeBoxFuture,
 };
 use std::fmt::Debug;
 
@@ -18,7 +18,7 @@ pub trait LogExporter: Send + Sync + Debug {
     fn export(
         &mut self,
         batch: Vec<(&LogRecord, &InstrumentationLibrary)>,
-    ) -> BoxFuture<'static, LogResult<()>>;
+    ) -> MaybeBoxFuture<'static, LogResult<()>>;
     /// Shuts down the exporter.
     fn shutdown(&mut self) {}
     #[cfg(feature = "logs_level_enabled")]
