@@ -10,7 +10,6 @@ use crate::exporter::http::HttpExporterBuilder;
 
 use crate::{NoExporterConfig, OtlpPipeline};
 use async_trait::async_trait;
-use futures_core::future::BoxFuture;
 use std::fmt::Debug;
 
 use opentelemetry::logs::{LogError, LogResult};
