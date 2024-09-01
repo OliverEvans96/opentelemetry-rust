@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use opentelemetry::logs::Severity;
 use opentelemetry::{
     logs::{LogError, LogResult},
-    InstrumentationLibrary, MaybeSend, MaybeSync,
+    InstrumentationLibrary,
 };
 use std::fmt::Debug;
 

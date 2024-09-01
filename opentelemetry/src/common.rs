@@ -438,37 +438,12 @@ impl KeyValue {
 }
 
 #[cfg(target_family = "wasm")]
+/// A pinned, boxed future which is Send + Sync when the platform is not wasm
 pub type MaybeBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
+
 #[cfg(not(target_family = "wasm"))]
+/// A pinned, boxed future which is Send + Sync when the platform is not wasm
 pub type MaybeBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
-
-#[cfg(not(target_family = "wasm"))]
-/// Send if not WASM
-pub trait MaybeSend: Send {}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T: Send> MaybeSend for T {}
-
-#[cfg(target_family = "wasm")]
-/// Send if not WASM
-pub trait MaybeSend {}
-
-#[cfg(target_family = "wasm")]
-impl<T> MaybeSend for T {}
-
-#[cfg(not(target_family = "wasm"))]
-/// Sync if not WASM
-pub trait MaybeSync: Sync {}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T: Sync> MaybeSync for T {}
-
-#[cfg(target_family = "wasm")]
-/// Sync if not WASM
-pub trait MaybeSync {}
-
-#[cfg(target_family = "wasm")]
-impl<T> MaybeSync for T {}
 
 /// Marker trait for errors returned by exporters
 pub trait ExportError: std::error::Error + Send + Sync + 'static {

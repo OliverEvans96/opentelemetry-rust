@@ -6,7 +6,7 @@ use crate::metrics::{
     AsyncInstrumentBuilder, Counter, Gauge, Histogram, InstrumentBuilder, InstrumentProvider,
     ObservableCounter, ObservableGauge, ObservableUpDownCounter, UpDownCounter,
 };
-use crate::{KeyValue, MaybeSend, MaybeSync};
+use crate::KeyValue;
 
 /// Provides access to named [Meter] instances, for instrumenting an application
 /// or crate.

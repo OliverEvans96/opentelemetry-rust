@@ -6,7 +6,7 @@
 use crate::{NoExporterConfig, OtlpPipeline};
 use async_trait::async_trait;
 use core::fmt;
-use opentelemetry::{metrics::Result, MaybeSend, MaybeSync};
+use opentelemetry::metrics::Result;
 
 #[cfg(feature = "grpc-tonic")]
 use crate::exporter::tonic::TonicExporterBuilder;
@@ -287,7 +287,7 @@ impl TemporalitySelector for DeltaTemporalitySelector {
 /// An interface for OTLP metrics clients
 #[cfg_attr(not(target_family = "wasm"), async_trait)]
 #[cfg_attr(target_family = "wasm", async_trait(?Send))]
-pub trait MetricsClient: fmt::Debug + MaybeSend + MaybeSync + 'static {
+pub trait MetricsClient: fmt::Debug + Send + Sync + 'static {
     async fn export(&self, metrics: &mut ResourceMetrics) -> Result<()>;
     fn shutdown(&self) -> Result<()>;
 }
