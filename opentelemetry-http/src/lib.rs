@@ -5,7 +5,10 @@ use std::fmt::Debug;
 pub use bytes::Bytes;
 #[doc(no_inline)]
 pub use http::{Request, Response};
-use opentelemetry::propagation::{Extractor, Injector};
+use opentelemetry::{
+    propagation::{Extractor, Injector},
+    MaybeSend, MaybeSync,
+};
 
 /// Helper for injecting headers into HTTP Requests. This is used for OpenTelemetry context
 /// propagation over HTTP.
@@ -53,7 +56,8 @@ pub type HttpError = Box<dyn std::error::Error + Send + Sync + 'static>;
 ///
 /// Users sometime choose HTTP clients that relay on a certain async runtime. This trait allows
 /// users to bring their choice of HTTP client.
-#[async_trait]
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 pub trait HttpClient: Debug + Send + Sync {
     /// Send the specified HTTP request
     ///
@@ -68,7 +72,8 @@ pub trait HttpClient: Debug + Send + Sync {
 mod reqwest {
     use super::{async_trait, Bytes, HttpClient, HttpError, Request, Response};
 
-    #[async_trait]
+    #[cfg_attr(not(target_family = "wasm"), async_trait)]
+    #[cfg_attr(target_family = "wasm", async_trait(?Send))]
     impl HttpClient for reqwest::Client {
         async fn send(&self, request: Request<Vec<u8>>) -> Result<Response<Bytes>, HttpError> {
             let request = request.try_into()?;

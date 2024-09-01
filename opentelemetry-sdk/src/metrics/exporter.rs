@@ -1,7 +1,7 @@
 //! Interfaces for exporting metrics
 use async_trait::async_trait;
 
-use opentelemetry::metrics::Result;
+use opentelemetry::{metrics::Result, MaybeSend, MaybeSync};
 
 use crate::metrics::{
     data::ResourceMetrics,
@@ -11,9 +11,10 @@ use crate::metrics::{
 /// Exporter handles the delivery of metric data to external receivers.
 ///
 /// This is the final component in the metric push pipeline.
-#[async_trait]
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 pub trait PushMetricsExporter:
-    AggregationSelector + TemporalitySelector + Send + Sync + 'static
+    AggregationSelector + TemporalitySelector + MaybeSend + MaybeSync + 'static
 {
     /// Export serializes and transmits metric data to a receiver.
     ///

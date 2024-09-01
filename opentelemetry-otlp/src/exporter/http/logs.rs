@@ -9,7 +9,8 @@ use opentelemetry_sdk::logs::LogRecord;
 
 use super::OtlpHttpClient;
 
-#[async_trait]
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 impl LogExporter for OtlpHttpClient {
     async fn export(&mut self, batch: Vec<(&LogRecord, &InstrumentationLibrary)>) -> LogResult<()> {
         let client = self

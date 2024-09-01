@@ -97,7 +97,8 @@ impl LogExporter {
     }
 }
 
-#[async_trait]
+#[cfg_attr(not(target_family = "wasm"), async_trait)]
+#[cfg_attr(target_family = "wasm", async_trait(?Send))]
 impl opentelemetry_sdk::export::logs::LogExporter for LogExporter {
     async fn export(&mut self, batch: Vec<(&LogRecord, &InstrumentationLibrary)>) -> LogResult<()> {
         self.client.export(batch).await
