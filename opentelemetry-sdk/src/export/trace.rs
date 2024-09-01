@@ -2,7 +2,7 @@
 use crate::Resource;
 use futures_util::future::BoxFuture;
 use opentelemetry::trace::{SpanContext, SpanId, SpanKind, Status, TraceError};
-use opentelemetry::{KeyValue, MaybeBoxFuture, MaybeSend, MaybeSync};
+use opentelemetry::{KeyValue, MaybeBoxFuture};
 use std::borrow::Cow;
 use std::fmt::Debug;
 use std::time::SystemTime;

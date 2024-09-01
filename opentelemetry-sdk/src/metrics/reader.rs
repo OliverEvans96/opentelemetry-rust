@@ -1,7 +1,7 @@
 //! Interfaces for reading and producing metrics
 use std::{fmt, sync::Weak};
 
-use opentelemetry::{metrics::Result, MaybeSend, MaybeSync};
+use opentelemetry::metrics::Result;
 
 use super::{
     aggregation::Aggregation,
@@ -25,7 +25,7 @@ use super::{
 /// Pull-based exporters will typically implement `MetricReader` themselves,
 /// since they read on demand.
 pub trait MetricReader:
-    AggregationSelector + TemporalitySelector + fmt::Debug + MaybeSend + MaybeSync + 'static
+    AggregationSelector + TemporalitySelector + fmt::Debug + Send + Sync + 'static
 {
     /// Registers a [MetricReader] with a [Pipeline].
     ///
@@ -57,7 +57,7 @@ pub trait MetricReader:
 }
 
 /// Produces metrics for a [MetricReader].
-pub(crate) trait SdkProducer: fmt::Debug + MaybeSend + MaybeSync {
+pub(crate) trait SdkProducer: fmt::Debug + Send + Sync {
     /// Returns aggregated metrics from a single collection.
     fn produce(&self, rm: &mut ResourceMetrics) -> Result<()>;
 }
@@ -69,7 +69,7 @@ pub trait MetricProducer: fmt::Debug + Send + Sync {
 }
 
 /// An interface for selecting the temporality for an [InstrumentKind].
-pub trait TemporalitySelector: MaybeSend + MaybeSync {
+pub trait TemporalitySelector: Send + Sync {
     /// Selects the temporality to use based on the [InstrumentKind].
     fn temporality(&self, kind: InstrumentKind) -> Temporality;
 }
@@ -98,7 +98,7 @@ impl TemporalitySelector for DefaultTemporalitySelector {
 
 /// An interface for selecting the aggregation and the parameters for an
 /// [InstrumentKind].
-pub trait AggregationSelector: MaybeSend + MaybeSync {
+pub trait AggregationSelector: Send + Sync {
     /// Selects the aggregation and the parameters to use for that aggregation based on
     /// the [InstrumentKind].
     fn aggregation(&self, kind: InstrumentKind) -> Aggregation;

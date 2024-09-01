@@ -45,7 +45,7 @@ use futures_util::{
     stream::{self, FusedStream, FuturesUnordered},
     StreamExt as _,
 };
-use opentelemetry::{global, MaybeBoxFuture, MaybeSend, MaybeSync};
+use opentelemetry::{global, MaybeBoxFuture};
 use opentelemetry::{
     trace::{TraceError, TraceResult},
     Context,

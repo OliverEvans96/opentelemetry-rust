@@ -6,7 +6,7 @@ use futures_util::future::BoxFuture;
 use opentelemetry::logs::Severity;
 use opentelemetry::{
     logs::{LogError, LogResult},
-    InstrumentationLibrary, MaybeSend, MaybeSync,
+    InstrumentationLibrary,
 };
 use std::fmt::Debug;
 

@@ -5,10 +5,7 @@ use std::fmt::Debug;
 pub use bytes::Bytes;
 #[doc(no_inline)]
 pub use http::{Request, Response};
-use opentelemetry::{
-    propagation::{Extractor, Injector},
-    MaybeSend, MaybeSync,
-};
+use opentelemetry::propagation::{Extractor, Injector};
 
 /// Helper for injecting headers into HTTP Requests. This is used for OpenTelemetry context
 /// propagation over HTTP.

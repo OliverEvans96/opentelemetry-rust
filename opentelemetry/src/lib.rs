@@ -205,7 +205,7 @@ pub mod testing;
 
 pub use common::{
     Array, ExportError, InstrumentationLibrary, InstrumentationLibraryBuilder, Key, KeyValue,
-    MaybeBoxFuture, MaybeSend, MaybeSync, StringValue, Value,
+    MaybeBoxFuture, StringValue, Value,
 };
 
 #[cfg(feature = "metrics")]
