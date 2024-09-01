@@ -4,7 +4,6 @@
 
 use std::fmt::Debug;
 
-use futures_core::future::BoxFuture;
 use opentelemetry::{trace::TraceError, MaybeBoxFuture};
 use opentelemetry_sdk::{
     self as sdk,

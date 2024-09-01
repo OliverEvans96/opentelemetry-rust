@@ -6,7 +6,7 @@
 //! [Tokio]: https://crates.io/crates/tokio
 //! [async-std]: https://crates.io/crates/async-std
 
-use futures_util::{future::BoxFuture, stream::Stream};
+use futures_util::stream::Stream;
 use opentelemetry::MaybeBoxFuture;
 use std::{fmt::Debug, future::Future, time::Duration};
 use thiserror::Error;

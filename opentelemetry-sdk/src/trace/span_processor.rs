@@ -40,7 +40,7 @@ use crate::runtime::{RuntimeChannel, TrySend};
 use crate::trace::Span;
 use futures_channel::oneshot;
 use futures_util::{
-    future::{self, BoxFuture, Either},
+    future::{self, Either},
     select,
     stream::{self, FusedStream, FuturesUnordered},
     StreamExt as _,
