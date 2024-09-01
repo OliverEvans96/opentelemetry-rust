@@ -8,7 +8,6 @@ use super::OtlpHttpClient;
 
 impl SpanExporter for OtlpHttpClient {
     fn export(&mut self, batch: Vec<SpanData>) -> MaybeBoxFuture<'static, ExportResult> {
-        log::info!("export span!");
         let client = match self
             .client
             .lock()
@@ -45,26 +44,19 @@ impl SpanExporter for OtlpHttpClient {
             request.headers_mut().insert(k.clone(), v.clone());
         }
 
-        log::info!("finishing export span!");
         Box::pin(async move {
-            log::info!("ES A");
             let request_uri = request.uri().to_string();
-            log::info!("ES B: {:?}", request_uri);
             let response = client.send(request).await?;
-            log::info!("ES C");
 
             if !response.status().is_success() {
-                log::info!("ES D");
                 let error = format!(
                     "OpenTelemetry trace export failed. Url: {}, Status Code: {}, Response: {:?}",
                     response.status().as_u16(),
                     request_uri,
                     response.body()
                 );
-                log::info!("ES E");
                 return Err(TraceError::Other(error.into()));
             }
-            log::info!("ES F");
 
             Ok(())
         })
