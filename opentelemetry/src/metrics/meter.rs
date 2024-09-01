@@ -63,9 +63,9 @@ pub trait MeterProvider {
     ) -> Meter;
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(target_arch = "wasm32"))]
 type ArcInstrumentProvider = Arc<dyn InstrumentProvider + Send + Sync>;
-#[cfg(target_family = "wasm")]
+#[cfg(target_arch = "wasm32")]
 type ArcInstrumentProvider = Arc<dyn InstrumentProvider>;
 
 /// Provides the ability to create instruments for recording measurements or

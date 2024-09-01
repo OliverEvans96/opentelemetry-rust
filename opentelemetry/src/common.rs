@@ -437,11 +437,11 @@ impl KeyValue {
     }
 }
 
-#[cfg(target_family = "wasm")]
+#[cfg(target_arch = "wasm32")]
 /// A pinned, boxed future which is Send + Sync when the platform is not wasm
 pub type MaybeBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(target_arch = "wasm32"))]
 /// A pinned, boxed future which is Send + Sync when the platform is not wasm
 pub type MaybeBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 

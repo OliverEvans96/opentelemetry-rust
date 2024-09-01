@@ -53,8 +53,8 @@ pub type HttpError = Box<dyn std::error::Error + Send + Sync + 'static>;
 ///
 /// Users sometime choose HTTP clients that relay on a certain async runtime. This trait allows
 /// users to bring their choice of HTTP client.
-#[cfg_attr(not(target_family = "wasm"), async_trait)]
-#[cfg_attr(target_family = "wasm", async_trait(?Send))]
+#[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+#[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
 pub trait HttpClient: Debug + Send + Sync {
     /// Send the specified HTTP request
     ///
@@ -69,8 +69,8 @@ pub trait HttpClient: Debug + Send + Sync {
 mod reqwest {
     use super::{async_trait, Bytes, HttpClient, HttpError, Request, Response};
 
-    #[cfg_attr(not(target_family = "wasm"), async_trait)]
-    #[cfg_attr(target_family = "wasm", async_trait(?Send))]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
     impl HttpClient for reqwest::Client {
         async fn send(&self, request: Request<Vec<u8>>) -> Result<Response<Bytes>, HttpError> {
             let request = request.try_into()?;
